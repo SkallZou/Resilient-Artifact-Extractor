@@ -34,31 +34,32 @@ print("-------------- LIST INCIDENTS TP --------------")
 for i in list_incidentID:
     print(i)
 
-#add loop there
-incident_id = "40386"
-Resource = "rest/orgs/202/incidents/{0}/artifacts".format(incident_id)
-url = "https://{0}/{1}".format(Server, Resource)
-list_artifact = []
-request = requests.get(url, headers=headers, auth=auth, verify=False) #Get request to the specified URL
+list_artifact_wanted = []
 
-if request.status_code == 200:
-    #print(json.dumps(request.json(), indent=4, sort_keys=True)) #json.dumps() function converts a Python object into a json string
-    print("-------TEST JSON into LIST------")
-    result = json.loads(json.dumps(request.json())) #load the json into a list, result become a list
-    print('Artifact list :')
-    for i in result:
-        print(i['type'])
-        print(i['value'])
-        list_artifact.append({'type':i['type'], 'value':i['value']}) #Put the type and the value in a list of dictionaries
-    print("---------TEST SPECIFIC ARTIFACT---------")
-    list_type = [2, 3, 13, 31, 37, 1176] #2:DNS, 3:URL, 13:MD5Hash, 31:FileName, 37:FilePath, 1176:CommandString
-    list_artifact_wanted = []
-    for j in range(len(list_artifact)):
-        if(list_artifact[j]['type'] in list_type):
-            print(list_artifact[j]['value'])
-            list_artifact_wanted.append(list_artifact[j]['value']) #Put the wanted artifact in a new list to dump in a external file
-    with open('ArtifactList.txt', 'w') as file:
-        json.dump(list_artifact_wanted, file) #json.dump() method extract a list to a file in JSON
+for j in list_incidentID:
+    incident_id = j
+    Resource = "rest/orgs/202/incidents/{0}/artifacts".format(incident_id)
+    url = "https://{0}/{1}".format(Server, Resource)
+    list_artifact = []
+    request = requests.get(url, headers=headers, auth=auth, verify=False) #Get request to the specified URL
 
-else:
-    print(request.status_code)
+    if request.status_code == 200:
+        #print(json.dumps(request.json(), indent=4, sort_keys=True)) #json.dumps() function converts a Python object into a json string
+        print("-------TEST JSON into LIST------")
+        result = json.loads(json.dumps(request.json())) #load the json into a list, result become a list
+        print('Artifact list :')
+        for i in result:
+            print("type: " + str(i['type']) + " - " + "value: " + str(i['value']))
+            list_artifact.append({'type':i['type'], 'value':i['value']}) #Put the type and the value in a list of dictionaries
+        print("---------TEST SPECIFIC ARTIFACT---------")
+        list_type = [2, 3, 13, 31, 37, 1176] #2:DNS, 3:URL, 13:MD5Hash, 31:FileName, 37:FilePath, 1176:CommandString
+        for j in range(len(list_artifact)):
+            if(list_artifact[j]['type'] in list_type):
+                print(list_artifact[j]['value'])
+                list_artifact_wanted.append(list_artifact[j]['value']) #Put the wanted artifact in a new list to dump in a external file
+        with open('ArtifactList.txt', 'w') as file:
+
+            json.dump(list_artifact_wanted, file) #json.dump() method extract a list to a file in JSON
+
+    else:
+        print(request.status_code)
