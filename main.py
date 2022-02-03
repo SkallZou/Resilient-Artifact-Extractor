@@ -54,12 +54,15 @@ for j in list_incidentID:
         print("---------TEST SPECIFIC ARTIFACT---------")
         list_type = [2, 3, 13, 31, 37, 1176] #2:DNS, 3:URL, 13:MD5Hash, 31:FileName, 37:FilePath, 1176:CommandString
         for j in range(len(list_artifact)):
-            if(list_artifact[j]['type'] in list_type):
-                print(list_artifact[j]['value'])
-                list_artifact_wanted.append(list_artifact[j]['value']) #Put the wanted artifact in a new list to dump in a external file
+            if list_artifact[j]['type'] in list_type:
+                if list_artifact[j]['value'] not in list_artifact_wanted: #Avoid duplicates
+                    print(list_artifact[j]['value'])
+                    list_artifact_wanted.append(list_artifact[j]['value']) #Put the wanted artifact in a new list to dump in a external file
         with open('ArtifactList.txt', 'w') as file:
-
-            json.dump(list_artifact_wanted, file) #json.dump() method extract a list to a file in JSON
+            for k in list_artifact_wanted:
+                file.write(k)
+                file.write('\n')
+            #json.dump(list_artifact_wanted, file) #json.dump() method extract a list to a file in JSON
 
     else:
         print(request.status_code)
