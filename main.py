@@ -188,5 +188,5 @@ for j in list_incidentID:
 
     else:
         print(request.status_code)
-
-# connection.close()
+        
+connection.close()
